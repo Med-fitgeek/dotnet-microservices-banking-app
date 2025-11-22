@@ -8,7 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IAccoutService, AccountServiceImpl>();
+builder.Services.AddScoped<IAccountService, AccountServiceImpl>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
