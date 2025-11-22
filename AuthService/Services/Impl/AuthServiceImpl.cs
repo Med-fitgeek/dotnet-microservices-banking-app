@@ -1,6 +1,14 @@
-﻿namespace AuthService.Services.Impl
+﻿using AuthService.Dtos;
+using Microsoft.AspNetCore.Identity;
+
+namespace AuthService.Services.Impl
 {
-    public class AuthServiceImpl
+    public class AuthServiceImpl : IAuthService
     {
+        public void Register(string fullName, string email, string password)
+        {
+
+        }
     }
+
 }
