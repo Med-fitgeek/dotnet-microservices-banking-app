@@ -19,6 +19,5 @@ namespace AuthService.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool isActive { get; set; } = false;
-        public string RefreshTokens { get; set; }
     }
 }

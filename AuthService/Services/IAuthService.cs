@@ -1,7 +1,10 @@
-﻿namespace AuthService.Services
+﻿using AuthService.Dtos;
+
+namespace AuthService.Services
 {
     public interface IAuthService
     {
-        void Register(string fullName, string email, string password);
+        Task<AuthResponse> RegisterAsync(RegisterRequest request);
+        Task<AuthResponse> LoginAsync(LoginRequest request);
     }
 }
