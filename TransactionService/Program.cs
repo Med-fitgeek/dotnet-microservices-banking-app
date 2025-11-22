@@ -41,9 +41,9 @@ builder.Services.AddAuthorization();
 // DB + Services
 // -----------------------------------------
 builder.Services.AddDbContext<TransactionDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<ITransactionService, TransactionService.Services.TransactionService>();
+builder.Services.AddScoped<ITransactionService, TransactionServiceImpl>();
 
 builder.Services.AddControllers();
 
