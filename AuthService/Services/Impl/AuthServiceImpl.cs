@@ -35,6 +35,8 @@ namespace AuthService.Services.Impl
             };
 
             _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
 
             return new AuthResponse
             {
