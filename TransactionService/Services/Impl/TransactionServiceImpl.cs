@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DineroBank.Shared.DTOs.Transaction;
+using Microsoft.EntityFrameworkCore;
 using TransactionService.Data;
 using TransactionService.Dtos;
+using TransactionService.Messaging;
 using TransactionService.Models;
 
 namespace TransactionService.Services
@@ -8,10 +10,13 @@ namespace TransactionService.Services
     public class TransactionServiceImpl : ITransactionService
     {
         private readonly TransactionDbContext _db;
+        private readonly IMessagePublisher _publisher;
 
-        public TransactionServiceImpl(TransactionDbContext db)
+
+        public TransactionServiceImpl(TransactionDbContext db, IMessagePublisher publisher)
         {
             _db = db;
+            _publisher = publisher;
         }
 
         public async Task<TransactionResponse> CreateAsync(TransactionCreateRequest req, Guid userId)
@@ -36,6 +41,17 @@ namespace TransactionService.Services
 
             _db.Transactions.Add(transaction);
             await _db.SaveChangesAsync();
+
+            await _publisher.PublishAsync("transaction.created", new TransactionDto
+            {
+                Id = transaction.Id,
+                AccountId = transaction.AccountId,
+                Amount = transaction.Amount,
+                TargetAccountId = transaction.TargetAccountId,
+                Type = transaction.Type,
+                Description = transaction.Description,
+                CreatedAt = transaction.CreatedAt
+            });
 
             return new TransactionResponse
             {
