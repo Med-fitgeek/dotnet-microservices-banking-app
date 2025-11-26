@@ -2,6 +2,7 @@
 using AccountService.Dtos;
 using AccountService.Models;
 using Microsoft.EntityFrameworkCore;
+using DineroBank.Shared.DTOs.Transaction;
 
 namespace AccountService.Services.Impl
 {
@@ -79,5 +80,56 @@ namespace AccountService.Services.Impl
             await _context.SaveChangesAsync();
             return true;
         }
+
+
+        public async Task<TransactionResult> ProcessTransactionAsync(TransactionDto transactionDto)
+        {
+            // 1️⃣ Vérifier idempotence
+            var alreadyProcessed = await _context.ProcessedMessages
+                                                .AnyAsync(m => m.MessageId == transactionDto.Id);
+            if (alreadyProcessed)
+                return new TransactionResult { Success = false, Message = "Message déjà traité" };
+
+            // 2️⃣ Récupérer le compte source
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == transactionDto.AccountId && a.IsActive);
+            if (account == null)
+                return new TransactionResult { Success = false, Message = "Compte introuvable ou inactif" };
+
+            // 3️⃣ Appliquer selon le type
+            switch (transactionDto.Type.ToUpper())
+            {
+                case "CREDIT":
+                    account.Balance += transactionDto.Amount;
+                    break;
+
+                case "DEBIT":
+                    if (account.Balance < transactionDto.Amount)
+                        return new TransactionResult { Success = false, Message = "Solde insuffisant" };
+                    account.Balance -= transactionDto.Amount;
+                    break;
+
+                case "TRANSFER":
+                    var targetAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == transactionDto.TargetAccountId && a.IsActive);
+                    if (targetAccount == null)
+                        return new TransactionResult { Success = false, Message = "Compte cible introuvable ou inactif" };
+                    if (account.Balance < transactionDto.Amount)
+                        return new TransactionResult { Success = false, Message = "Solde insuffisant" };
+
+                    account.Balance -= transactionDto.Amount;
+                    targetAccount.Balance += transactionDto.Amount;
+                    targetAccount.UpdatedAt = DateTime.UtcNow;
+                    break;
+
+                default:
+                    return new TransactionResult { Success = false, Message = "Type de transaction inconnu" };
+            }
+
+            account.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return new TransactionResult { Success = true, Message = "Transaction appliquée" };
+        }
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AccountService.Dtos;
+using DineroBank.Shared.DTOs.Transaction;
+
 
 namespace AccountService.Services
 {
@@ -10,5 +12,6 @@ namespace AccountService.Services
         Task<AccountResponse> GetAccountByIdAsync(Guid userId, Guid accountId);
 
         Task<bool> CloseAccountAsync(Guid userId, Guid accountId);
+        Task<TransactionResult> ProcessTransactionAsync(TransactionDto dto);
     }
 }
