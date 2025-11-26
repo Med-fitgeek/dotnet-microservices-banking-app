@@ -12,7 +12,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DineroBank.Shared", "DineroBank.Shared\DineroBank.Shared.csproj", "{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +63,18 @@ Global
 		{1F0E27B3-FBC0-EF27-E0A6-A10E2C626281}.Release|x64.Build.0 = Release|Any CPU
 		{1F0E27B3-FBC0-EF27-E0A6-A10E2C626281}.Release|x86.ActiveCfg = Release|Any CPU
 		{1F0E27B3-FBC0-EF27-E0A6-A10E2C626281}.Release|x86.Build.0 = Release|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Debug|x64.Build.0 = Debug|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Debug|x86.Build.0 = Debug|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Release|x64.ActiveCfg = Release|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Release|x64.Build.0 = Release|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Release|x86.ActiveCfg = Release|Any CPU
+		{82A1C0A5-7492-76F3-8D9F-6A95F86D90CD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
