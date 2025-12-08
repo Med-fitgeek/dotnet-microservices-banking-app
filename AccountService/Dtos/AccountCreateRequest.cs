@@ -2,7 +2,7 @@
 
 namespace AccountService.Dtos
 {
-    public class AccountCreateRequest
+    public record AccountCreateRequest
     {
         [Required]
         [MaxLength(50)]

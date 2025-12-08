@@ -73,6 +73,23 @@ services:
       retries: 6
 
 
+  apigateway:
+    build: ./ApiGateway
+    depends_on:
+      - transactionservice
+      - accountservice
+      - rabbitmq
+    environment:
+      Jwt__PublicKeyPath: "/app/keys/public.key"
+      Jwt__Issuer: "DineroBank.AuthService"
+      Jwt__Audience: "DineroBank"
+      ASPNETCORE_URLS: "http://+:5000"
+    volumes:
+      - ./keys/public.key:/app/keys/public.key:ro
+    ports:
+      - "5000:5000"
+
+
   authservice:
     build: 
      context: .
@@ -86,12 +103,12 @@ services:
       Jwt__PublicKeyPath: /app/keys/public.key
       Jwt__Issuer: DineroBank.AuthService
       Jwt__Audience: DineroBank
-      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_URLS: http://+:5001
     volumes:
       - ./keys/public.key:/app/keys/public.key
       - ./keys/private.key:/app/keys/private.key
     ports:
-      - 5000:5000
+      - 5001:5001
 
 
   accountservice:
@@ -112,12 +129,12 @@ services:
       Jwt__PublicKeyPath: /app/keys/public.key
       Jwt__Issuer: DineroBank.AuthService
       Jwt__Audience: DineroBank
-      ASPNETCORE_URLS: http://+:5001
+      ASPNETCORE_URLS: http://+:5002
       ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - ./keys/public.key:/app/keys/public.key
     ports:
-      - 5001:5001
+      - 5002:5002
 
 
   transactionservice:
@@ -138,12 +155,12 @@ services:
       Jwt__PublicKeyPath: /app/keys/public.key
       Jwt__Issuer: DineroBank.AuthService
       Jwt__Audience: DineroBank
-      ASPNETCORE_URLS: http://+:5002
+      ASPNETCORE_URLS: http://+:5003
       ASPNETCORE_ENVIRONMENT: Development
     volumes:
       - ./keys/public.key:/app/keys/public.key
     ports:
-      - 5002:5002
+      - 5003:5003
 
 
 volumes:

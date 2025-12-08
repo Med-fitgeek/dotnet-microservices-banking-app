@@ -6,22 +6,12 @@ namespace TransactionService.Models
     {
         [Key]
         public Guid Id { get; set; }
-
-        [Required]
-        public required Guid AccountId { get; set; }
-
-        public required Guid? TargetAccountId { get; set; } // transfert uniquement
-
-        [Required]
-        public required decimal Amount { get; set; }
-
-        [Required]
-        public required string Type { get; set; } // CREDIT | DEBIT | TRANSFER
-
+        public Guid AccountId { get; set; }
+        public Guid? TargetAccountId { get; set; } // transfert uniquement
+        public decimal Amount { get; set; }
+        public string? Type { get; set; } // CREDIT | DEBIT | TRANSFER
         public string? Description { get; set; }
-
         public Guid UserId { get; set; } // Extracted from JWT
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
