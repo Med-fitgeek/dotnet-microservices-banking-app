@@ -51,7 +51,7 @@ namespace AuthService.Services.Impl
         }
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 throw new Exception("Email or password invalid");
 
