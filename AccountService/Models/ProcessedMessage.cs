@@ -11,6 +11,6 @@ namespace AccountService.Models
         [Required]
         public DateTime ProcessedAt { get; internal set; }
         [Required]
-        public string Handler { get; internal set; }
+        public string? Handler { get; internal set; }
     }
 }

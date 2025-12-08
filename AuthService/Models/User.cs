@@ -8,14 +8,14 @@ namespace AuthService.Models
         public Guid Id { get; set; }
         [Required]
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public required string FullName { get; set; }
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
         [Required]
-        public string PasswordHash { get; set; }
+        public required string PasswordHash { get; set; }
         [Required]
-        public string Role { get; set; }
+        public required string Role { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool isActive { get; set; } = false;

@@ -1,15 +1,153 @@
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: rbmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
     environment:
       RABBITMQ_DEFAULT_USER: rabbit
       RABBITMQ_DEFAULT_PASS: rabbit
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      test:
+        - CMD
+        - rabbitmq-diagnostics
+        - status
       interval: 10s
       timeout: 5s
       retries: 6
+    volumes:
+      - rbmq_data:/var/lib/rabbitmq
+
+  postgres_auth:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: auth123
+    ports:
+      - 5433:5432
+    volumes:
+      - pg_auth_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U auth -d authdb
+      interval: 10s
+      retries: 6
+
+
+  postgres_account:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: accountdb
+      POSTGRES_USER: account
+      POSTGRES_PASSWORD: account123
+    ports:
+      - 5434:5432
+    volumes:
+      - pg_account_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U account -d accountdb
+      interval: 10s
+      retries: 6
+
+
+  postgres_transaction:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: transactiondb
+      POSTGRES_USER: transaction
+      POSTGRES_PASSWORD: transaction123
+    ports:
+      - 5435:5432
+    volumes:
+      - pg_transaction_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U transaction -d transactiondb
+      interval: 10s
+      retries: 6
+
+
+  authservice:
+    build: 
+     context: .
+     dockerfile: AuthService/Dockerfile
+    depends_on:
+      postgres_auth:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: Host=postgres_auth;Port=5432;Database=authdb;Username=auth;Password=auth123
+      Jwt__PrivateKeyPath: /app/keys/private.key
+      Jwt__PublicKeyPath: /app/keys/public.key
+      Jwt__Issuer: DineroBank.AuthService
+      Jwt__Audience: DineroBank
+      ASPNETCORE_URLS: http://+:5000
+    volumes:
+      - ./keys/public.key:/app/keys/public.key
+      - ./keys/private.key:/app/keys/private.key
+    ports:
+      - 5000:5000
+
+
+  accountservice:
+    build: 
+     context: .
+     dockerfile: AccountService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres_account:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: Host=postgres_account;Port=5432;Database=accountdb;Username=account;Password=account123
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__User: rabbit
+      RabbitMq__Password: rabbit
+      Jwt__PublicKeyPath: /app/keys/public.key
+      Jwt__Issuer: DineroBank.AuthService
+      Jwt__Audience: DineroBank
+      ASPNETCORE_URLS: http://+:5001
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - ./keys/public.key:/app/keys/public.key
+    ports:
+      - 5001:5001
+
+
+  transactionservice:
+    build:
+      context: .
+      dockerfile: TransactionService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres_transaction:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: Host=postgres_transaction;Port=5432;Database=transactiondb;Username=transaction;Password=transaction123
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__User: rabbit
+      RabbitMq__Password: rabbit
+      Jwt__PublicKeyPath: /app/keys/public.key
+      Jwt__Issuer: DineroBank.AuthService
+      Jwt__Audience: DineroBank
+      ASPNETCORE_URLS: http://+:5002
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - ./keys/public.key:/app/keys/public.key
+    ports:
+      - 5002:5002
+
+
+volumes:
+  rbmq_data: 
+  pg_auth_data: 
+  pg_account_data: 
+  pg_transaction_data: 

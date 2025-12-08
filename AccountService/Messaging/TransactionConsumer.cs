@@ -90,6 +90,11 @@ namespace AccountService.Messaging
 
                     var dto = JsonSerializer.Deserialize<TransactionDto>(text);
 
+                    if (dto ==null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
                     // Appel logique métier
                     var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
                     var result = await accountService.ProcessTransactionAsync(dto);

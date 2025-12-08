@@ -8,15 +8,15 @@ namespace TransactionService.Models
         public Guid Id { get; set; }
 
         [Required]
-        public Guid AccountId { get; set; }
+        public required Guid AccountId { get; set; }
 
-        public Guid? TargetAccountId { get; set; } // transfert uniquement
-
-        [Required]
-        public decimal Amount { get; set; }
+        public required Guid? TargetAccountId { get; set; } // transfert uniquement
 
         [Required]
-        public string Type { get; set; } // CREDIT | DEBIT | TRANSFER
+        public required decimal Amount { get; set; }
+
+        [Required]
+        public required string Type { get; set; } // CREDIT | DEBIT | TRANSFER
 
         public string? Description { get; set; }
 
