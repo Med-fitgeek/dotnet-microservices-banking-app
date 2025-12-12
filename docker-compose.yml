@@ -74,8 +74,11 @@ services:
 
 
   apigateway:
-    build: ./ApiGateway
+    build: 
+     context: .
+     dockerfile: ApiGateway/Dockerfile
     depends_on:
+      - authservice
       - transactionservice
       - accountservice
       - rabbitmq
